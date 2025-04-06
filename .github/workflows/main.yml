@@ -1,0 +1,57 @@
+name: CI/CD for Python Server and Next.js
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.15.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
+
+
+      - name: Create .env.local file for rotrade
+        run: |
+          echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> ./rotrade/.env.local
+          echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> ./rotrade/.env.local
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ./rotrade/.env.local
+          echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> ./rotrade/.env.local
+          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> ./rotrade/.env.local
+          echo "NEXT_PUBLIC_STRIPE_PUBLIC_KEY=${{ secrets.NEXT_PUBLIC_STRIPE_PUBLIC_KEY }}" >> ./rotrade/.env.local
+          echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}" >> ./rotrade/.env.local
+          echo "STRIPE_WEBHOOK_SECRET=${{ secrets.STRIPE_WEBHOOK_SECRET }}" >> ./rotrade/.env.local
+
+
+      - name: Create .env file for Docker Compose
+        run: |
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
+          echo "STRIPE_RK=${{ secrets.STRIPE_RK }}" >> .env
+
+      - name: Build and run containers with Docker Compose
+        run: |
+          docker-compose -f docker-compose.yml --env-file .env up --build -d
+
+      - name: Wait for containers to be ready
+        run: sleep 10
+
+      - name: Stop Docker containers
+        run: docker-compose down
