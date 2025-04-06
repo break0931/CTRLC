@@ -29,21 +29,17 @@ jobs:
 
       - name: Create .env.local file for rotrade
         run: |
-          echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> ./rotrade/.env.local
-          echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> ./rotrade/.env.local
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ./rotrade/.env.local
-          echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> ./rotrade/.env.local
-          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> ./rotrade/.env.local
-          echo "NEXT_PUBLIC_STRIPE_PUBLIC_KEY=${{ secrets.NEXT_PUBLIC_STRIPE_PUBLIC_KEY }}" >> ./rotrade/.env.local
-          echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}" >> ./rotrade/.env.local
-          echo "STRIPE_WEBHOOK_SECRET=${{ secrets.STRIPE_WEBHOOK_SECRET }}" >> ./rotrade/.env.local
+          echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> ./ctrlc/.env.local
+          echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> ./ctrlc/.env.local
+          echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> ./ctrlc/.env.local
+          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> ./ctrlc/.env.local
+          echo "NEXT_PUBLIC_STRIPE_PUBLIC_KEY=${{ secrets.NEXT_PUBLIC_STRIPE_PUBLIC_KEY }}" >> ./ctrlc/.env.local
+          echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}" >> ./ctrlc/.env.local
+          echo "STRIPE_WEBHOOK_SECRET=${{ secrets.STRIPE_WEBHOOK_SECRET }}" >> ./ctrlc/.env.local
 
 
       - name: Create .env file for Docker Compose
         run: |
-          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
-          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
-          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
           echo "STRIPE_RK=${{ secrets.STRIPE_RK }}" >> .env
 
       - name: Build and run containers with Docker Compose
