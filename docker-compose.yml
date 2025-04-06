@@ -1,0 +1,51 @@
+
+version: '3.8'
+
+services:
+  # AI service (model)
+  ai:
+    build:
+      context: ./AI_model  
+      dockerfile: Dockerfile  
+    volumes:
+      - ./AI_model:/app 
+    
+    ports:
+      - "5555:5555"  
+      
+  # Python server service
+  python_server:
+    build:
+      context: ./python_server  
+      dockerfile: Dockerfile  
+    volumes:
+      - ./python_server:/app  
+    
+    ports:
+      - "8888:8888"  
+      - "9999:9999"  
+
+  # ctrlc service (Next.js)
+  ctrlc:
+    build:
+      context: ./ctrlc  
+      dockerfile: Dockerfile 
+    volumes:
+      - ./ctrlc:/app  
+      - /app/node_modules  
+    
+    ports:
+      - "4000:4000"   # Expose Next.js app (Frontend)
+      - "5000:5000"   # Expose Fastify API (Backend)
+      - "6666:6666"   # Expose ZeroMQ Pull (for listening to trade history)
+      - "7777:7777"   # Expose ZeroMQ Publish (for sending trade requests)
+
+
+  stripe-cli:
+      image: stripe/stripe-cli
+      container_name: stripe-cli
+      command: "listen --forward-to http://localhost:4000/api/webhooks --api-key ${STRIPE_RK}" 
+      env_file:
+        - ./ctrlc/.env.local
+      network_mode: "host" 
+      restart: always  
