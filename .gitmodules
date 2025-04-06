@@ -1,0 +1,3 @@
+[submodule "ctrlc"]
+	path = ctrlc
+	url = https://github.com/break0931/CTRLC.git
