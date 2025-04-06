@@ -27,7 +27,7 @@ jobs:
           docker-compose --version
 
 
-      - name: Create .env.local file for rotrade
+      - name: Create .env.local file in ctrlc
         run: |
           echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> ./ctrlc/.env.local
           echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> ./ctrlc/.env.local
