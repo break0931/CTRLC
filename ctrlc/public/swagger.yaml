@@ -1,0 +1,774 @@
+openapi: 3.0.0
+info:
+  title: My API
+  description: API Documentation with Swagger UI
+  version: 1.0.0
+
+paths:
+  /admindashboard:
+    get:
+      summary: Get dashboard statistics
+      
+      responses:
+        '200':
+          description: Successful response with statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalRevenue:
+                    type: number
+                    example: 123456.78
+                  totalCustomers:
+                    type: integer
+                    example: 300
+                  activeStrategies:
+                    type: integer
+                    example: 15
+                  revenueGraph:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        month:
+                          type: string
+                          example: "2024-03"
+                        revenue:
+                          type: number
+                          example: 45678.90
+                  customerGrowthGraph:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        month:
+                          type: string
+                          example: "2024-03"
+                        customers:
+                          type: integer
+                          example: 80
+                  topStrategies:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        strategy_id:
+                          type: string
+                          example: "6622fae54ed013fdb402ed80"
+                        name:
+                          type: string
+                          example: "Alpha Strategy"
+                        symbol:
+                          type: string
+                          example: "ALPHA"
+                        total:
+                          type: number
+                          example: 9000.50
+                  topCustomers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        user_id:
+                          type: string
+                          example: "661fa9c44ed013fdb402ed2a"
+                        total:
+                          type: number
+                          example: 14000
+                        name:
+                          type: string
+                          example: "Alice Smith"
+                        email:
+                          type: string
+                          example: "alice@example.com"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Server error
+  /api/available_mt5:
+    post:
+      summary: Get available MT5 subscriber accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                  example: "678373fd3bdb581a425a8b9f"
+              required:
+                - user_id
+      responses:
+        '200':
+          description: List of MT5 accounts with no active subscriptions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    mt5_name:
+                      type: string
+                      example: "John MT5"
+                    mt5_id:
+                      type: string
+                      example: "123456"
+                    account_type:
+                      type: string
+                      example: "subscriber"
+        '400':
+          description: Missing token or user ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Missing token or user ID"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Server error"
+  /api/bills:
+    post:
+      summary: Get bills by user ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                  example: "678373fd3bdb581a425a8b9f"
+              required:
+                - user_id
+      responses:
+        '200':
+          description: List of bills with strategy names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      example: "661092d51c96274e78f56b30"
+                    mt5_id:
+                      type: string
+                      example: "12345678"
+                    strategy_id:
+                      type: string
+                      example: "661091c71c96274e78f56b29"
+                    amount:
+                      type: number
+                      example: 150.50
+                    createdAt:
+                      type: string
+                      format: date-time
+                      example: "2024-04-05T12:34:56.789Z"
+                    updatedAt:
+                      type: string
+                      format: date-time
+                      example: "2024-04-06T10:00:00.000Z"
+                    strategy_name:
+                      type: string
+                      example: "Trend Following Bot"
+        '400':
+          description: Missing token or user ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Missing token or user ID"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal server error"
+
+  /api/create-token:
+    post:
+      summary: Save token and verify against MT5 accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  example: "mcjg71kWFn4vMArVmBfPNOtlZMBIDTEm"
+                user_id:
+                  type: string
+                  example: "678373fd3bdb581a425a8b9f"
+              required:
+                - token
+                - user_id
+      responses:
+        '200':
+          description: Token verification result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: boolean
+                    example: true
+        '400':
+          description: Missing token or user ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Missing token or user ID"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Server error"
+
+  /api/mt5account:
+    post:
+      summary: Retrieve MT5 accounts for a specific user by user ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                  example: "678373fd3bdb581a425a8b9f"
+              required:
+                - user_id
+      responses:
+        '200':
+          description: MT5 account details successfully retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    mt5_name:
+                      type: string
+                      example: "John Doe"
+                    mt5_id:
+                      type: string
+                      example: "mt5-123456"
+                    account_type:
+                      type: string
+                      example: "subscriber"
+        '400':
+          description: Missing user ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Missing token or user ID"
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Server error"
+
+  /api/subscribe:
+    post:
+      summary: Subscribe a Mt5 account to a strategy
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mt5_id:
+                  type: string
+                  example: "mt5-123456"
+                strategie_id:
+                  type: string
+                  example: "64dbd10f8fa8a933dcfc8db1"
+              required:
+                - mt5_id
+                - strategie_id
+      responses:
+        '200':
+          description: Subscription to strategy was successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Subscribe Strategy success"
+        '400':
+          description: Missing parameters (mt5_id or strategie_id)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Missing params"
+        '500':
+          description: Server error occurred
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Server error"
+
+
+  /api/subscribed:
+    post:
+      summary: Get subscriptions for a user, including strategy and MT5 account information.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                  example: "64dbd10f8fa8a933dcfc8db1"
+              required:
+                - user_id
+      responses:
+        '200':
+          description: Successfully fetched user subscriptions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    mt5_name:
+                      type: string
+                      example: "MT5 Account 123"
+                    mt5_id:
+                      type: string
+                      example: "mt5-123456"
+                    account_type:
+                      type: string
+                      example: "demo"
+                    strategy_name:
+                      type: string
+                      example: "Strategy A"
+                    symbol:
+                      type: string
+                      example: "EURUSD"
+                    status:
+                      type: string
+                      example: "active"
+                    sub_id:
+                      type: string
+                      example: "sub-id-123"
+                    start_date:
+                      type: string
+                      format: date-time
+                      example: "2025-04-05T12:00:00Z"
+                    end_date:
+                      type: string
+                      format: date-time
+                      example: "2025-06-05T12:00:00Z"
+        '400':
+          description: Missing user ID parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Missing user ID"
+        '500':
+          description: Server error occurred
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Server error"
+  
+  /api/unSubscribe:
+    post:
+      summary: Unsubscribe a user from a strategy by setting the subscription status to inactive.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sub_id:
+                  type: string
+                  description: The subscription ID to be updated.
+                  example: "64dbd10f8fa8a933dcfc8db2"
+              required:
+                - sub_id
+      responses:
+        '200':
+          description: Successfully unsubscribed user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "unsubscribe"
+        '400':
+          description: Missing subscription ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "missing sub_id"
+        '500':
+          description: Server error occurred
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "server error"
+
+  /api/subscribedinfo:
+    post:
+      summary: Fetch a subscription by its ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: The subscription ID to fetch.
+                  example: "64dbd10f8fa8a933dcfc8db2"
+              required:
+                - id
+      responses:
+        '200':
+          description: Subscription details successfully fetched.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  subscription:
+                    type: object
+                    example: { "_id": "64dbd10f8fa8a933dcfc8db2", "status": "active" }
+        '400':
+          description: Missing subscription ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Missing token or user ID"
+        '500':
+          description: Server error occurred.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "An error occurred while fetching strategies."
+
+  /api/strategyinfo:
+    post:
+      summary: Fetch a strategy by its name.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: The name of the strategy.
+                  example: "EMA Strategy"
+              required:
+                - name
+      responses:
+        '200':
+          description: Strategy details successfully fetched.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  strategy:
+                    type: object
+                    example: { "_id": "64dbd10f8fa8a933dcfc8db2", "name": "EMA Strategy" }
+        '400':
+          description: Missing strategy name.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Missing token or user ID"
+        '500':
+          description: Server error occurred.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "An error occurred while fetching strategies."
+
+  /api/mt5info:
+    post:
+      summary: Fetch an MT5 account by its ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: The MT5 account ID.
+                  example: "12345"
+              required:
+                - id
+      responses:
+        '200':
+          description: MT5 account details successfully fetched.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mt5_account:
+                    type: object
+                    example: { "_id": "64dbd10f8fa8a933dcfc8db2", "mt5_name": "Account 1", "mt5_id": "12345" }
+        '400':
+          description: Missing MT5 account ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Missing ID"
+        '500':
+          description: Server error occurred.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "An error occurred while fetching strategies."
+
+  /api/trade-history:
+    post:
+      summary: Send MT5 ID to Fastify API and return trade-history
+      description: This endpoint accepts a `mt5_id`, sends it to a Fastify-based backend, and returns the response.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mt5_id:
+                  type: string
+                  example: "123456"
+              required:
+                - mt5_id
+      responses:
+        '200':
+          description: Success. Returns the response from the Fastify API.
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  success: true
+                  data:
+                    result: "some_result"
+        '400':
+          description: Bad Request. Missing `mt5_id`.
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: "Missing mt5_id"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: "Something went wrong"
+
+  /api/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                  example: John Doe
+                email:
+                  type: string
+                  format: email
+                  example: johndoe@example.com
+                password:
+                  type: string
+                  format: password
+                  example: mysecurepassword
+      responses:
+        '201':
+          description: User successfully registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User registered.
+        '500':
+          description: Server error during registration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: An error occured while registering the user.
+
+  /api/usercheck:
+    post:
+      summary: Get User ID by Email
+      description: Returns the user's `_id` from the database based on the provided email.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: johndoe@example.com
+      responses:
+        '200':
+          description: User ID retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                        example: 605c5d8f8f1b2c001f2e4c77
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: An error occured while registering the user.
